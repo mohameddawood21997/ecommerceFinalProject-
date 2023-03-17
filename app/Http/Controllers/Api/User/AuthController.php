@@ -9,16 +9,24 @@ use App\Models\User;
 use Hash;
 use App\Http\Requests\user\StoreRequest;
 use App\Http\Requests\user\UpdateRequest;
+use App\Models\Image;
+
 class AuthController extends Controller
 {
 
     public function register(StoreRequest $request){
 
+        $file = $request->file('image');
+        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('uploads/users'), $filename);
+        // $uploadedFileUrl = cloudinary()->upload($request->file('image')->getRealPath(),['folder'=>'users'])->getSecurePath();
+        $fullPathName='uploads/users/'.$filename;
+
         $user=new User();
         $user->name=$request->name;
         $user->email=$request->email;
         $user->password=Hash::make($request->password);
-        $user->image=$request->image;
+        $user->image=$fullPathName;
         $user->gender=$request->gender;
         $user->save();
         return $user;
@@ -61,9 +69,16 @@ class AuthController extends Controller
         return $user;
     }
 
+      public function show(){
+
+        $user=User::findOrFail(9);
+        return $user;
+    }
+
 
     public function upload(Request $request){
-        $image_path = $request->file('file')->store('images/products', 'public');
+        // $name="mohamed";
+        $image_path = $request->file('file')->store("images/users", 'public');
         // $image_path = $request->image->move(public_path('images'), $image_name);
 
         // $extension = $request->file->getClientOriginalExtension();
@@ -71,14 +86,27 @@ class AuthController extends Controller
         // $image_name = str_replace(' ', '', trim($request->model) . time() . "." . $extension);
         // $image_name = str_replace(' ', '', trim($request->file) . "." . $extension);
 
-        $image_name = $request->file->getClientOriginalName();
+        // $image_name = $request->file->getClientOriginalName();
 
 
 
     //     $data = Image::create([
-    //         'name' => $image_path,
+    //         'name' => $image_name,
     //         'product_id'=>1
     //    ]);
-        return $image_name;
+        return $image_path;
+
+
+        // $file = $request->file('image');
+        // $filename = time() . '.' . $file->getClientOriginalExtension();
+        // $file->move(public_path('uploads'), $filename);
+        // return response()->json(['success' => true]);
+
+
+        // $fileName = $request->file('file')->getClientOriginalName();
+        // $extension = $request->file('file')->extension();
+        // $mime = $request->file('file')->getMimeType();
+        // $clientSize = $request->file('file')->getSize();
+       
     }
 }

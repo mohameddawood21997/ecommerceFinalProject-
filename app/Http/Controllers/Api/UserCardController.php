@@ -18,7 +18,7 @@ class UserCardController extends Controller
             'product_id' => 'required|max:255',
         ]);
         try {
-            $userCard=new UserCard();
+        $userCard=new UserCard();
         $userCard->user_id=Auth::user()->id;
         $userCard->product_id=$request->product_id;
         $userCard->save();
@@ -33,10 +33,17 @@ class UserCardController extends Controller
 
     }
 
+    public function deleteFromCart($product_id){
+        $product=UserCard::where('product_id',$product_id)->first();
+        $product->delete();
+        return 'deleted successfuly';
+
+    }
+
     public function showUserCard(){
 
            $userId=Auth::user()->id;
-           $cards = Product::select('products.name','products.price','products.discount','products.description','products.image')
+           $cards = Product::select('products.name','products.price','products.discount','products.description','products.image','products.id')
             ->join('user_cards', 'user_cards.product_id', '=', 'products.id')
             ->join('users', 'users.id', '=', 'user_cards.user_id')
             ->where('users.id', $userId)

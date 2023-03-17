@@ -36,7 +36,7 @@ class FavoriteController extends Controller
     public function showFavorite(){
 
         $userId=Auth::user()->id;
-        $favoites = Product::select('products.name','products.price','products.discount','products.description','products.image')
+        $favoites = Product::select('products.name','products.price','products.discount','products.description','products.image','products.id')
          ->join('favorites', 'favorites.product_id', '=', 'products.id')
          ->join('users', 'users.id', '=', 'favorites.user_id')
          ->where('users.id', $userId)
@@ -45,4 +45,12 @@ class FavoriteController extends Controller
     return  $favoites;
 
  }
+
+ public function deleteFromFavorite($product_id){
+    $product=Favorite::where('product_id',$product_id)->first();
+    $product->delete();
+    // return $product;
+    return 'deleted successfuly';
+
+}
 }
