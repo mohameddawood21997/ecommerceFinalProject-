@@ -6,8 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
-use App\Http\Resources\ProductResource;
 use Illuminate\Database\Eloquent\Collection;
+use App\Http\Resources\ProductResource;
+
 class ProductController extends Controller
 {
     /**

@@ -8,6 +8,8 @@ use  App\Http\Controllers\Api\OrderController;
 use  App\Http\Controllers\Api\products\ProductController;
 use  App\Http\Controllers\Api\UserCardController;
 use  App\Http\Controllers\Api\FavoriteController;
+use  App\Http\Controllers\Api\CategoryController;
+
 
 
 
@@ -37,20 +39,25 @@ Route::get('test',function(){
 })->middleware('auth:admin-api');
 //////////users/////////
 Route::group(['prefix'=>'users'], function(){
-    // Route::get('/', 'AccountController@index')->name('index');
-       Route::post('register',[AuthController::class,'register']);
-       Route::put('update/{id}',[AuthController::class,'update']);
+    Route::get('show', [AuthController::class,'show']);
+
+       Route::post('register',[AuthController::class,'register']);   //
+       Route::put('update/{id}',[AuthController::class,'update']);   //
        Route::delete('delete/{id}',[AuthController::class,'delete']);
        Route::post('upload',[AuthController::class,'upload']);
-       Route::post('login',[AuthController::class,'login']);
-       Route::post('addToCart',[UserCardController::class,'addToCart'])->middleware('auth:api');
-       Route::get('showUserCard',[UserCardController::class,'showUserCard'])->middleware('auth:api');
-       Route::post('addToFavorite',[FavoriteController::class,'addToFavorite'])->middleware('auth:api');
-       Route::get('showFavorite',[FavoriteController::class,'showFavorite'])->middleware('auth:api');
-       Route::get('showFavorite',[FavoriteController::class,'showFavorite'])->middleware('auth:api');
+       Route::post('login',[AuthController::class,'login']);         //
+       Route::post('addToCart',[UserCardController::class,'addToCart'])->middleware('auth:api');   //
+       Route::get('showUserCard',[UserCardController::class,'showUserCard'])->middleware('auth:api');  //
+       Route::post('deleteFromCart/{productId}',[UserCardController::class,'deleteFromCart']);        //
+       Route::post('addToFavorite',[FavoriteController::class,'addToFavorite'])->middleware('auth:api');  //
+       Route::get('showFavorite',[FavoriteController::class,'showFavorite'])->middleware('auth:api');    //
+       Route::post('deleteFromFavorite/{productId}',[FavoriteController::class,'deleteFromFavorite'])->middleware('auth:api');
 
 
 
+
+ ///// /////////////////////////order///////////////////
+Route::post('createorder',[OrderController::class,'store'])->middleware('auth:api');
 
 
 });
@@ -72,5 +79,7 @@ Route::get('searchByCatagoryName/{catName}',[ProductController::class,'searchByC
 //     Route::get('/', 'AccountController@index')->name('index');
 //     Route::get('connect', 'AccountController@connect')->name('connect');
 // });
-/////////////////////////order///////////////////
-Route::post('createorder',[OrderController::class,'store'])->middleware('auth:api');
+
+
+////////////////////////////////////////////////////////
+Route::apiResource('categories',CategoryController::class);

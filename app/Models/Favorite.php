@@ -9,5 +9,5 @@ class Favorite extends Model
 {
     use HasFactory;
     protected $guard = [];
-    public $timestamps = false;
+    // public $timestamps = false;
 }
