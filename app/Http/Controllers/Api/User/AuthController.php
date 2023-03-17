@@ -51,16 +51,28 @@ class AuthController extends Controller
 
     }
 
-    public function update(UpdateRequest $request,$id){
+    public function update(Request $request){
+        // $id=Auth::user()->id;
+       $user = User::find(25);
 
-        $user=User::findOrFail($id);
+        $file = $request->file('image');
+        $url="http://127.0.0.1:8000/users/";
+        //   $extension =  $file->getClientOriginalExtension();
+          $imageName =  $file->getClientOriginalName();
+          unlink(public_path("users/$user->imgName"));
+        $file->move(public_path('users'), $imageName);
+        $img_path=$url.$imageName;
+
         $user->name=$request->name;
         $user->email=$request->email;
-        $user->image=$request->image;
+         $user->image=$img_path;
+         $user->imgName=$imageName;
         $user->gender=$request->gender;
         $user->save();
+
         return $user;
     }
+    
 
     public function delete($id){
 
@@ -107,6 +119,6 @@ class AuthController extends Controller
         // $extension = $request->file('file')->extension();
         // $mime = $request->file('file')->getMimeType();
         // $clientSize = $request->file('file')->getSize();
-       
+
     }
 }

@@ -52,6 +52,7 @@ Route::group(['prefix'=>'users'], function(){
        Route::post('addToFavorite',[FavoriteController::class,'addToFavorite'])->middleware('auth:api');  //
        Route::get('showFavorite',[FavoriteController::class,'showFavorite'])->middleware('auth:api');    //
        Route::post('deleteFromFavorite/{productId}',[FavoriteController::class,'deleteFromFavorite'])->middleware('auth:api');
+       Route::post('update',[AuthController::class,'update']);
 
 
 
