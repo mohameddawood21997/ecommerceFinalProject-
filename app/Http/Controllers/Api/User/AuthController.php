@@ -15,22 +15,53 @@ class AuthController extends Controller
 {
 
     public function register(StoreRequest $request){
+      
 
         $file = $request->file('image');
-        $filename = time() . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('uploads/users'), $filename);
-        // $uploadedFileUrl = cloudinary()->upload($request->file('image')->getRealPath(),['folder'=>'users'])->getSecurePath();
-        $fullPathName='uploads/users/'.$filename;
+        $url="http://127.0.0.1:8000/users/";
+        //   $extension =  $file->getClientOriginalExtension();
+          $imageName =  $file->getClientOriginalName();
+      
+        $file->move(public_path('users'), $imageName);
+        $img_path=$url.$imageName;
+       
 
         $user=new User();
         $user->name=$request->name;
         $user->email=$request->email;
         $user->password=Hash::make($request->password);
-        $user->image=$fullPathName;
+        // $user->image=$fullPathName;
+         $user->image=$img_path;
         $user->gender=$request->gender;
         $user->save();
         return $user;
     }
+    
+
+
+
+    public function updateUser2(Request $request){
+        // $id=Auth::user()->id;
+       $user = User::find(25);
+       
+        $file = $request->file('image');
+        $url="http://127.0.0.1:8000/users/";
+        //   $extension =  $file->getClientOriginalExtension();
+          $imageName =  $file->getClientOriginalName();
+          unlink(public_path("users/$user->imgName"));
+        $file->move(public_path('users'), $imageName);
+        $img_path=$url.$imageName;
+       
+        $user->name=$request->name;
+        $user->email=$request->email;
+         $user->image=$img_path;
+         $user->imgName=$imageName;
+        $user->gender=$request->gender;
+        $user->save();
+        
+        return $user;
+    }
+
     public function login(Request $request){
 
 
@@ -51,16 +82,7 @@ class AuthController extends Controller
 
     }
 
-    public function update(UpdateRequest $request,$id){
 
-        $user=User::findOrFail($id);
-        $user->name=$request->name;
-        $user->email=$request->email;
-        $user->image=$request->image;
-        $user->gender=$request->gender;
-        $user->save();
-        return $user;
-    }
 
     public function delete($id){
 
@@ -71,7 +93,7 @@ class AuthController extends Controller
 
       public function show(){
 
-        $user=User::findOrFail(9);
+        $user=User::findOrFail(25);
         return $user;
     }
 
@@ -79,6 +101,7 @@ class AuthController extends Controller
     public function upload(Request $request){
         // $name="mohamed";
         $image_path = $request->file('file')->store("images/users", 'public');
+
         // $image_path = $request->image->move(public_path('images'), $image_name);
 
         // $extension = $request->file->getClientOriginalExtension();
@@ -107,6 +130,17 @@ class AuthController extends Controller
         // $extension = $request->file('file')->extension();
         // $mime = $request->file('file')->getMimeType();
         // $clientSize = $request->file('file')->getSize();
+
+
+
+
+           // $url="http://127.0.0.1:8000/storage/";
+            // $path=$request->file('image')->storeAs('userImages',$ProductName);
+        //   Storage::disk('public')->put($image_path.'/' .$imageName, base64_decode($image));
+         // $uploadedFileUrl = cloudinary()->upload($request->file('image')->getRealPath(),['folder'=>'users'])->getSecurePath();
+        // $fullPathName='uploads/users/'.$filename;
+
+        // $filename = time() . '.' . $file->getClientOriginalExtension();
        
     }
 }

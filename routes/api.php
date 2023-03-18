@@ -41,7 +41,7 @@ Route::group(['prefix'=>'users'], function(){
     Route::get('show', [AuthController::class,'show']);
 
        Route::post('register',[AuthController::class,'register']);   //
-       Route::put('update/{id}',[AuthController::class,'update']);   //
+    //  Route::put('update/{id}',[AuthController::class,'update']);   //
        Route::delete('delete/{id}',[AuthController::class,'delete']);
        Route::post('upload',[AuthController::class,'upload']);    
        Route::post('login',[AuthController::class,'login']);         //
@@ -51,8 +51,7 @@ Route::group(['prefix'=>'users'], function(){
        Route::post('addToFavorite',[FavoriteController::class,'addToFavorite'])->middleware('auth:api');  //
        Route::get('showFavorite',[FavoriteController::class,'showFavorite'])->middleware('auth:api');    //
        Route::post('deleteFromFavorite/{productId}',[FavoriteController::class,'deleteFromFavorite'])->middleware('auth:api');
-
-
+       Route::post('update',[AuthController::class,'update']); 
 
 
  ///// /////////////////////////order///////////////////

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Image;
 use Illuminate\Database\Eloquent\Collection;
 use App\Http\Resources\ProductResource;
 
@@ -43,10 +44,10 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+
         $product=new Product();
         $product->name=$request->name;
         $product->rate=$request->rate;
-        $product->image=$request->image;
         $product->price=$request->price;
         $product->quantity=$request->quantity;
         $product->description=$request->description;
@@ -55,12 +56,41 @@ class ProductController extends Controller
         $product->category_id=$request->category_id;
         $product->save();
 
-        return $product;
 
-
-
-
-
+        if ($request->hasFile('image')) {
+        
+            
+                    $url = "http://127.0.0.1:8000/productImages/";
+                  
+                    
+                    foreach ($request->file('image') as $image) {
+                 
+                        if (!$image->isValid()) {
+                            // The image is not valid, handle the error appropriately
+                            continue;
+                        }
+                        
+                        $imageName = $image->getClientOriginalName();
+                        $image->move(public_path('productImages'), $imageName);
+                        $fullPath = $url . $imageName;
+                        
+                        $newImage = new Image();
+                        $newImage->product_id = $product->id;
+                        $newImage->imgPath = $fullPath;
+                        $newImage->name = $imageName;
+                        $newImage->save();
+                    }
+                 
+           
+                
+                return response()->json([$product,'success' => true]);
+          
+            //  $images=   $product->images()->create([
+            //         'imgPath' => $fullPath,
+            //         'name' => $imageName,
+            //     ]);
+            }
+    
     }
 
     /**
@@ -161,3 +191,49 @@ class ProductController extends Controller
         return $product;
     }
 }
+
+
+
+
+
+// public function store(Request $request)
+// {
+//     // Validate the incoming request data
+//     $validatedData = $request->validate([
+//         'name' => 'required|string|max:255',
+//         'description' => 'required|string',
+//         'price' => 'required|numeric|min:0',
+//         'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Allows multiple image uploads with the specified file types and size
+//     ]);
+
+//     // Create a new product with the validated data
+//     $product = Product::create([
+//         'name' => $validatedData['name'],
+//         'description' => $validatedData['description'],
+//         'price' => $validatedData['price'],
+//     ]);
+
+//     // Save the uploaded images and associate them with the new product
+//     if ($request->hasFile('images')) {
+//         $images = $request->file('images');
+
+//         foreach ($images as $image) {
+//             $imagePath = $image->store('public/images'); // Store the image file in the specified directory within the storage folder
+//             $imageName = $image->getClientOriginalName(); // Get the original name of the image file
+//             $imageCaption = $imageName; // You can customize the image caption as needed
+//             $imageAltText = $imageName; // You can customize the image alt text as needed
+
+//             $product->images()->create([
+//                 'url' => $imagePath,
+//                 'caption' => $imageCaption,
+//                 'alt_text' => $imageAltText,
+//             ]);
+//         }
+//     }
+
+//     // Return the newly created product and associated images as a JSON response
+//     return response()->json([
+//         'message' => 'Product created successfully.',
+//         'product' => $product->load('images'), // Load the associated images with the product
+//     ], 201);
+// }
