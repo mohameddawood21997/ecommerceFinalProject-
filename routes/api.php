@@ -15,6 +15,7 @@ use  App\Http\Controllers\Api\CategoryController;
 
 
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -43,7 +44,7 @@ Route::group(['prefix'=>'users'], function(){
        Route::post('register',[AuthController::class,'register']);   //
     //  Route::put('update/{id}',[AuthController::class,'update']);   //
        Route::delete('delete/{id}',[AuthController::class,'delete']);
-       Route::post('upload',[AuthController::class,'upload']);    
+       Route::post('upload',[AuthController::class,'upload']);
        Route::post('login',[AuthController::class,'login']);         //
        Route::post('addToCart',[UserCardController::class,'addToCart'])->middleware('auth:api');   //
        Route::get('showUserCard',[UserCardController::class,'showUserCard'])->middleware('auth:api');  //
@@ -57,7 +58,7 @@ Route::group(['prefix'=>'users'], function(){
  ///// /////////////////////////order///////////////////
 Route::post('createorder',[OrderController::class,'store'])->middleware('auth:api');
 
-       
+
 });
 
 
