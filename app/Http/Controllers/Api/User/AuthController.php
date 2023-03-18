@@ -40,7 +40,27 @@ class AuthController extends Controller
 
 
 
-
+    public function updateUser(Request $request){
+        // $id=Auth::user()->id;
+       $user = User::find(25);
+       
+        $file = $request->file('image');
+        $url="http://127.0.0.1:8000/users/";
+        //   $extension =  $file->getClientOriginalExtension();
+          $imageName =  $file->getClientOriginalName();
+          unlink(public_path("users/$user->imgName"));
+        $file->move(public_path('users'), $imageName);
+        $img_path=$url.$imageName;
+       
+        $user->name=$request->name;
+        $user->email=$request->email;
+         $user->image=$img_path;
+         $user->imgName=$imageName;
+        $user->gender=$request->gender;
+        $user->save();
+        
+        return $user;
+    }
 
     public function login(Request $request){
 

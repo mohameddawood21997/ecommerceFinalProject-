@@ -12,7 +12,7 @@ class Product extends Model
 {
     use HasFactory;
     protected $guard=[];
-    public $timestamps = false;
+    // public $timestamps = false;
 
 
     public function category()

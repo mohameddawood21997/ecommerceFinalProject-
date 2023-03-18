@@ -59,9 +59,9 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
         
-            
+        //    $images= $request->hasFile('image')
                     $url = "http://127.0.0.1:8000/productImages/";
-                  
+                   
                     
                     foreach ($request->file('image') as $image) {
                  
@@ -73,7 +73,6 @@ class ProductController extends Controller
                         $imageName = $image->getClientOriginalName();
                         $image->move(public_path('productImages'), $imageName);
                         $fullPath = $url . $imageName;
-                        
                         $newImage = new Image();
                         $newImage->product_id = $product->id;
                         $newImage->imgPath = $fullPath;
@@ -117,21 +116,6 @@ class ProductController extends Controller
     public function searchByCatagoryName($catName)
     {
 
-        // $category = Product::select('products.*')
-        //     ->join('categories', 'categories.id', '=', 'products.category_id')
-        //     ->where('categories.name', $catName)
-        //     ->get();
-        // // $category=Category::where("name",$catName)->get();
-
-
-
-        // $category = Product::select('products.*')->whereHas('categories', function($query) use ($catName){
-        //     $query->where('categories.name', $catName);
-        // })->get();
-        //
-        // $category= ProductResource::collection($category);
-
-
         $category = Category::where('name', $catName)->first();
 
         $products = Product::whereHas('category', function($query) use ($category) {
@@ -141,6 +125,18 @@ class ProductController extends Controller
 
          $products= ProductResource::collection($products);
         return $products;
+
+
+         // $category = Product::select('products.*')
+        //     ->join('categories', 'categories.id', '=', 'products.category_id')
+        //     ->where('categories.name', $catName)
+        //     ->get();
+        //  $category=Category::where("name",$catName)->get();
+        // $category = Product::select('products.*')->whereHas('categories', function($query) use ($catName){
+        //     $query->where('categories.name', $catName);
+        // })->get();
+        //
+        // $category= ProductResource::collection($category);
     }
 
     /**
@@ -187,8 +183,12 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product=Product::find($id);
+        $images=Product::find($id)->images;
+        foreach($images as $image){
+            unlink(public_path("productImages/$image->name"));
+        }
         $product->delete();
-        return $product;
+        return 'deleted successfuly';
     }
 }
 
