@@ -8,14 +8,15 @@ use App\Models\Product;
 
 class Image extends Model
 {
+    
     use HasFactory;
     protected $guard = [];
-    protected $fillable=['name','product_id'];
+    // protected $fillable=['name','product_id'];
     // public $timestamps = false;
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class,'product_id');
     }
 
 

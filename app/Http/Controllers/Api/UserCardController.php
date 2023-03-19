@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\UserCard;
 use App\Models\Product;
 use Exception;
+use App\Models\Image;
+use Illuminate\Support\Facades;
 
 
 class UserCardController extends Controller
@@ -43,14 +45,54 @@ class UserCardController extends Controller
     public function showUserCard(){
 
            $userId=Auth::user()->id;
-           $cards = Product::select('products.name','products.price','products.discount','products.description','products.image','products.id')
+
+           $cards = Product::with(['images'=>function($q){
+            $q->select('imgPath','product_id');
+           }])->select('products.name','products.price','products.discount','products.description','products.id')
             ->join('user_cards', 'user_cards.product_id', '=', 'products.id')
             ->join('users', 'users.id', '=', 'user_cards.user_id')
+           
             ->where('users.id', $userId)
-            ->get();
+            ->get()->toArray();
         // $category=Category::where("name",$catName)->get();
-       return  $cards;
+        return response()->json($cards);
+
+//         $cards = Product::with(['images'=>function($q){
+//             $q->pluck('images.imgPath')->flatten()->toArray();
+//         }])
+//         ->select('products.name','products.price','products.discount','products.description','products.id')
+//         ->join('user_cards', 'user_cards.product_id', '=', 'products.id')
+//         ->join('users', 'users.id', '=', 'user_cards.user_id')
+//         ->where('users.id', $userId)
+//         ->get();
+
+// $imgPaths = $cards->pluck('images.*.imgPath')->flatten()->toArray();
+
+// return response()->json([
+//     'cards' => $cards,
+//     'imgPaths' => $imgPaths
+// ]);
+
+
+
+// $cards = Product::select([
+//     'products.name',
+//     'products.price',
+//     'products.discount',
+//     'products.description',
+//     'products.id',
+//    \DB::raw('(SELECT JSON_UNQUOTE(JSON_ARRAYAGG(imgPath)) FROM images WHERE product_id = products.id) AS imgPaths')
+// ])
+// ->join('user_cards', 'user_cards.product_id', '=', 'products.id')
+// ->join('users', 'users.id', '=', 'user_cards.user_id')
+// ->where('users.id', $userId)
+// ->get()->toArray();
+
+// return response()->json($cards);
 
     }
+
+
+    
 
 }

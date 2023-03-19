@@ -19,11 +19,22 @@ class ProductController extends Controller
      */
     public function index()
     {
-        // $products=Product::get()->all();
-        $products= ProductResource::collection(Product::all());
-        // $cat=Category::all();
-        //  $comment->post->title;
-        return $products;
+        $products = Product::with('images')->get();
+
+        $data = $products->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => $product->price,
+                'description' => $product->description,
+                'rate' => $product->rate,
+                'discount' => $product->discount,
+                'category'=>$product->category->name,
+                'images' => $product->images->pluck('imgPath')
+            ];
+        });
+        
+        return response()->json($data);
     }
 
     /**
@@ -103,7 +114,7 @@ class ProductController extends Controller
         // $product=Product::find($id);
         $product= new ProductResource(Product::findOrFail($id));
 
-        return $product;
+        return response()->json($product);
     }
     public function searchByProductName($name)
     {
@@ -126,17 +137,6 @@ class ProductController extends Controller
          $products= ProductResource::collection($products);
         return $products;
 
-
-         // $category = Product::select('products.*')
-        //     ->join('categories', 'categories.id', '=', 'products.category_id')
-        //     ->where('categories.name', $catName)
-        //     ->get();
-        //  $category=Category::where("name",$catName)->get();
-        // $category = Product::select('products.*')->whereHas('categories', function($query) use ($catName){
-        //     $query->where('categories.name', $catName);
-        // })->get();
-        //
-        // $category= ProductResource::collection($category);
     }
 
     /**
@@ -157,12 +157,12 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($id,Request $request)
     {
         $product= Product::find($id);
+        return $request->all();
         $product->name=$request->name;
         $product->rate=$request->rate;
-        $product->image=$request->image;
         $product->price=$request->price;
         $product->quantity=$request->quantity;
         $product->description=$request->description;
@@ -171,7 +171,32 @@ class ProductController extends Controller
         $product->category_id=$request->category_id;
         $product->save();
 
-        return $product;
+        // $oldImages = Image::where('product_id', $id)->get();
+        // $oldImages = Product::find($id)->images;
+         $oldImages = $product->find($id)->images;
+        foreach($oldImages as $oldImage){
+            unlink(public_path("productImages/$oldImage->name"));
+            $oldImage->delete();
+        }
+       
+        if ($request->hasFile('image')) {
+
+                        $url = "http://127.0.0.1:8000/productImages/";
+                        foreach ($request->file('image') as $image) {
+                            
+                            $imageName = $image->getClientOriginalName();
+                            $image->move(public_path('productImages'), $imageName);
+                            $fullPath = $url . $imageName;
+                            $newImage = new Image();
+                            $newImage->product_id = $product->id;
+                            $newImage->imgPath = $fullPath;
+                            $newImage->name = $imageName;
+                            $newImage->save();
+                        }
+                     
+                }
+
+                return response()->json([$product,'success' => true]);
     }
 
     /**
@@ -182,13 +207,27 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
+        try {
         $product=Product::find($id);
         $images=Product::find($id)->images;
+        
         foreach($images as $image){
-            unlink(public_path("productImages/$image->name"));
+       
+            
+                if(file_exists("productImages/$image->name"));
+                {
+                unlink(public_path("productImages/$image->name"));
+                }
+
+            // unlink(public_path("productImages/$image->name"));
         }
         $product->delete();
         return 'deleted successfuly';
+    }
+
+        catch (\Throwable $th) {
+            return "some thisng is wrong";
+           }
     }
 }
 
@@ -236,4 +275,21 @@ class ProductController extends Controller
 //         'message' => 'Product created successfully.',
 //         'product' => $product->load('images'), // Load the associated images with the product
 //     ], 201);
+
+
+
+
+         // $category = Product::select('products.*')
+        //     ->join('categories', 'categories.id', '=', 'products.category_id')
+        //     ->where('categories.name', $catName)
+        //     ->get();
+        //  $category=Category::where("name",$catName)->get();
+        // $category = Product::select('products.*')->whereHas('categories', function($query) use ($catName){
+        //     $query->where('categories.name', $catName);
+        // })->get();
+        //
+        // $category= ProductResource::collection($category);
+
+         //$products = Products::where('product_status', '>=', 0)->orderBy('product_id', 'desc')->paginate(30); // Replace 100 
+        //  $products = Products::with('images')->where('product_status', '>=', 0)->orderBy('product_id', 'desc')->paginate(30);
 // }

@@ -18,11 +18,12 @@ class ProductResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'price' => $this->price,
-            'images' => $this->images,
             'description' => $this->description,
             'rate' => $this->rate,
             'discount' => $this->discount,
-            'category'=>$this->category->name
+            'category'=>$this->category->name,
+            'images' => $this->images->pluck('imgPath'),
+
 
         ];
     }

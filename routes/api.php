@@ -6,9 +6,11 @@ use  App\Http\Controllers\Api\User\AuthController;
 use  App\Http\Controllers\Api\Admin\AdminAuthController;
 use  App\Http\Controllers\Api\OrderController;
 use  App\Http\Controllers\Api\products\ProductController;
+use  App\Http\Controllers\Api\products\UpdateProductController;
 use  App\Http\Controllers\Api\UserCardController;
 use  App\Http\Controllers\Api\FavoriteController;
 use  App\Http\Controllers\Api\CategoryController;
+
 
 
 
@@ -71,6 +73,7 @@ Route::apiResource('products',ProductController::class);
 
 Route::get('searchByProductName/{name}',[ProductController::class,'searchByProductName']);
 Route::get('searchByCatagoryName/{catName}',[ProductController::class,'searchByCatagoryName']);
+Route::post('product/update/{id}',[UpdateProductController::class,'updateProduct']);//updateProduct
 
 
 
@@ -82,3 +85,5 @@ Route::get('searchByCatagoryName/{catName}',[ProductController::class,'searchByC
 
 ////////////////////////////////////////////////////////
 Route::apiResource('categories',CategoryController::class);
+
+

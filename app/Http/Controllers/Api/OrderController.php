@@ -13,12 +13,6 @@ class OrderController extends Controller
     public function store(Request $request){
         $order = new Order();
 
-    // if (Auth::check()) {
-    //     $order->user_id = auth()->user()->id;
-    // } else {
-    //     return 'no logged in';
-    // }
-
     //   return optional(Auth::user())->id;
         $order->name = Auth::user()->name ;
         $order->total_price = $request->total_price;
