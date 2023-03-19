@@ -44,51 +44,29 @@ class UserCardController extends Controller
 
     public function showUserCard(){
 
-           $userId=Auth::user()->id;
+        $user_id = auth()->id();
+        // Retrieve all cards associated with the logged-in user
+        $cards = UserCard::where('user_id', $user_id)->get();
+    
+        // Retrieve the products and images for each card
+        foreach ($cards as $card) {
+            $product = $card->product;
+            $imagePaths = $product->images()->select('imgPath')->get()->pluck('imgPath')->toArray();    
+            // Add the product and image data to the array
 
-           $cards = Product::with(['images'=>function($q){
-            $q->select('imgPath','product_id');
-           }])->select('products.name','products.price','products.discount','products.description','products.id')
-            ->join('user_cards', 'user_cards.product_id', '=', 'products.id')
-            ->join('users', 'users.id', '=', 'user_cards.user_id')
-           
-            ->where('users.id', $userId)
-            ->get()->toArray();
-        // $category=Category::where("name",$catName)->get();
-        return response()->json($cards);
+            $product->imagePaths = $imagePaths;
+            $data[] = 
+                // 'product' => $product,
+                  $product
+                // 'images' => $imagePaths,
+            ;
+        }
+    
+        // Return the data as a JSON response
+        return response()->json($data);
 
-//         $cards = Product::with(['images'=>function($q){
-//             $q->pluck('images.imgPath')->flatten()->toArray();
-//         }])
-//         ->select('products.name','products.price','products.discount','products.description','products.id')
-//         ->join('user_cards', 'user_cards.product_id', '=', 'products.id')
-//         ->join('users', 'users.id', '=', 'user_cards.user_id')
-//         ->where('users.id', $userId)
-//         ->get();
+     
 
-// $imgPaths = $cards->pluck('images.*.imgPath')->flatten()->toArray();
-
-// return response()->json([
-//     'cards' => $cards,
-//     'imgPaths' => $imgPaths
-// ]);
-
-
-
-// $cards = Product::select([
-//     'products.name',
-//     'products.price',
-//     'products.discount',
-//     'products.description',
-//     'products.id',
-//    \DB::raw('(SELECT JSON_UNQUOTE(JSON_ARRAYAGG(imgPath)) FROM images WHERE product_id = products.id) AS imgPaths')
-// ])
-// ->join('user_cards', 'user_cards.product_id', '=', 'products.id')
-// ->join('users', 'users.id', '=', 'user_cards.user_id')
-// ->where('users.id', $userId)
-// ->get()->toArray();
-
-// return response()->json($cards);
 
     }
 

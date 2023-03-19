@@ -35,14 +35,26 @@ class FavoriteController extends Controller
 
     public function showFavorite(){
 
-        $userId=Auth::user()->id;
-        $favoites = Product::select('products.name','products.price','products.discount','products.description','products.image','products.id')
-         ->join('favorites', 'favorites.product_id', '=', 'products.id')
-         ->join('users', 'users.id', '=', 'favorites.user_id')
-         ->where('users.id', $userId)
-         ->get();
-     // $category=Category::where("name",$catName)->get();
-    return  $favoites;
+        $user_id = auth()->id();
+        // Retrieve all cards associated with the logged-in user
+        $favorites = Favorite::where('user_id', $user_id)->get();
+    
+        // Retrieve the products and images for each card
+        foreach ($favorites as $favorite) {
+            $product = $favorite->product;
+            $imagePaths = $product->images()->select('imgPath')->get()->pluck('imgPath')->toArray();    
+            // Add the product and image data to the array
+
+            $product->imagePaths = $imagePaths;
+            $data[] = 
+                // 'product' => $product,
+                  $product
+                // 'images' => $imagePaths,
+            ;
+        }
+    
+        // Return the data as a JSON response
+        return response()->json($data);
 
  }
 
