@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Auth\TokenGuard;
 use App\Models\Admin;
+use App\Http\Resources\UserResourse;
+use App\Models\User;
+
+
+
 class AdminAuthController extends Controller
 {
     public function adminLogin(Request $request){
@@ -42,4 +47,31 @@ class AdminAuthController extends Controller
     
 //     return 'unauthorized';
 // }
+
+
+
+public function showUser($id){
+    // $id=Auth::user()->id;
+    try {
+        $user= new UserResourse(User::findOrFail(1));
+        return response()->json($user);
+       }
+     catch (\Exception $ex) {
+        return 'user dose not exist';
+    }
+ }
+
+
+
+ public function adminLogout(Request $request){
+    try {
+      Auth::user('admin-api')->currentAccessToken()->delete();
+  
+      return response()->json('logout successfuly');
+    } catch (\Throwable $th) {
+      return response()->json('some this is wrong');
+    }
+     
+  }
+    
 }

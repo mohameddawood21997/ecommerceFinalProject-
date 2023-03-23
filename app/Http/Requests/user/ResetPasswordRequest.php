@@ -3,10 +3,8 @@
 namespace App\Http\Requests\user;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation;
-use Illuminate\Validation\Rule;
 
-class UpdateRequest extends FormRequest
+class ResetPasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,18 +19,16 @@ class UpdateRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function rules()
     {
-        // $userId = auth()->user()->id;
         return [
-            'name' => ['required'],
-            'email' => ['required','email',$this->id
-            // Rule::unique('users')->ignore($userId)
-        ],
-            'gender' => ['required'],
-            'image' => ['required'],
+            'email'=>['required','email','exists:users'],
+            'otp'=> ['required','max:6'],
+            'password'=>['required','string','min:6'],
+
+
         ];
     }
 }

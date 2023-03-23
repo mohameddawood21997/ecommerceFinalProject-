@@ -17,7 +17,7 @@ class UserCardController extends Controller
     public function addToCart(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|max:255',
+            'product_id' => 'required|max:255|unique:user_cards',
         ]);
         try {
         $userCard=new UserCard();
@@ -47,21 +47,17 @@ class UserCardController extends Controller
         $user_id = auth()->id();
         // Retrieve all cards associated with the logged-in user
         $cards = UserCard::where('user_id', $user_id)->get();
-    
         // Retrieve the products and images for each card
         foreach ($cards as $card) {
             $product = $card->product;
+            $product->makeHidden(['created_at','updated_at','image']);
             $imagePaths = $product->images()->select('imgPath')->get()->pluck('imgPath')->toArray();    
             // Add the product and image data to the array
 
             $product->imagePaths = $imagePaths;
-            $data[] = 
-                // 'product' => $product,
-                  $product
-                // 'images' => $imagePaths,
-            ;
+            $data[] = $product;
         }
-    
+       
         // Return the data as a JSON response
         return response()->json($data);
 

@@ -12,7 +12,7 @@ class Order extends Model
 
     // protected $fillable = ['customer_name'];
     protected $guard = [];
-    public $timestamps = false;
+    // public $timestamps = false;
 
     public function orderProducts()
     {

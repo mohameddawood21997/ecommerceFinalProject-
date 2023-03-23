@@ -24,11 +24,26 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required'],
+            'name' => ['required','min:4'],
             'email' => 'required|email|unique:users|max:255',
-            'password' => ['required'],
+            'password' =>'required|min:6|max:16',
             'gender' => ['required'],
+            'image' => 'required'
             // 'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048'
         ];
+
+        
     }
+    // public function messages()
+    // {
+    //     return [
+    //         'name.required' => 'name is required',
+    //         'name.min' => 'name must not less than 4 char',
+    //         // 'password' =>'required|min:6|max:16',
+    //         // 'gender' => ['required'],
+    //         // 'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048'
+    //     ];
+
+        
+    // }
 }

@@ -15,7 +15,7 @@ class FavoriteController extends Controller
     public function addToFavorite(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|max:255',
+            'product_id' => 'required|max:255|unique:favorites',
         ]);
         try {
         $favorite=new Favorite();

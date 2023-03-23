@@ -15,8 +15,13 @@ class CategoryController extends Controller
      */
     public function index()
     {
-              $categories=category::all();
-              return $categories;
+        try {
+            $categories=category::all();
+       return response()->json($categories);
+        } catch (\Throwable $th) {
+            return response()->json('somthing is wrong');
+        }
+      
 
     }
 
@@ -38,6 +43,9 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|unique:categories,name|max:30|min:4', 
+        ]);
         $category=new category();
         $category->name=$request->name;
         $category->save();
@@ -52,8 +60,12 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $category=category::findOrFail($id);
-        return $category;
+        try {
+            $category=category::findOrFail($id);
+       return response()->json($category);
+        } catch (\Throwable $th) {
+            return response()->json('somthing is wrong');
+        }
     }
 
     /**
@@ -76,10 +88,13 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+           'name' => 'required|max:30|min:4|unique:categories,name,'.$id,
+        ]);
         $category= category::find($id);
         $category->name=$request->name;
         $category->save();
-        return $category;
+        return response()->json($category);
     }
 
     /**
@@ -90,8 +105,13 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category=category::findOrFail($id);
-        $category->delete();
-        return 'category deleted';
+        try {
+            $category=category::findOrFail($id);
+            $category->delete();
+            return response()->json($category);
+        } catch (\Throwable $th) {
+            return response()->json('error in delete');
+        }
+       
     }
 }
