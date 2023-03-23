@@ -3,6 +3,9 @@
 // use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use  App\Http\Controllers\StripePaymentController;
+use  App\Http\Controllers\PaymentController;
+use Faker\Guesser\Name;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +21,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-// Route::post('login', function (Request $request) {
-//     // return view('welcome');
-//     return $request ;
-// });
+
+// Route::get('stripe', [StripePaymentController::class , 'stripe']);
+// Route::post('stripe', [StripePaymentController::class, 'stripePost'])->name('stripe.post');
+
+
+Route::get('/stripe', [PaymentController::class, 'stripe']);
+Route::post('/charge', [PaymentController::class, 'charge'])->name('stripe.post');
+

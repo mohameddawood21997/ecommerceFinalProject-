@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Facade;
 
+
 return [
 
     /*
@@ -212,5 +213,7 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
         'Cloudinary' => CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::class,
     ])->toArray(),
+    'Stripe' => Stripe\Stripe::class,
+
 
 ];

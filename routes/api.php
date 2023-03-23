@@ -10,13 +10,8 @@ use  App\Http\Controllers\Api\products\UpdateProductController;
 use  App\Http\Controllers\Api\UserCardController;
 use  App\Http\Controllers\Api\FavoriteController;
 use  App\Http\Controllers\Api\CategoryController;
-
-
-
-
-
-
-
+use  App\Http\Controllers\Api\StripePaymentController;
+use Faker\Guesser\Name;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,7 +49,7 @@ Route::group(['prefix'=>'users'], function(){
        Route::post('addToFavorite',[FavoriteController::class,'addToFavorite'])->middleware('auth:api');  //
        Route::get('showFavorite',[FavoriteController::class,'showFavorite'])->middleware('auth:api');    //
        Route::post('deleteFromFavorite/{productId}',[FavoriteController::class,'deleteFromFavorite'])->middleware('auth:api');
-       Route::post('update',[AuthController::class,'update']); 
+       Route::post('update',[AuthController::class,'update']);
 
 
  ///// /////////////////////////order///////////////////
@@ -87,3 +82,5 @@ Route::post('product/update/{id}',[UpdateProductController::class,'updateProduct
 Route::apiResource('categories',CategoryController::class);
 
 
+// Route::get('stripe',[StripePaymentController::class,'stripe']);
+Route::post('stripe',[StripePaymentController::class,'stripePost']);

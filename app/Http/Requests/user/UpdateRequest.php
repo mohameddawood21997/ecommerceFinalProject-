@@ -30,4 +30,30 @@ class UpdateRequest extends FormRequest
             'image' => ['required'],
         ];
     }
+    // 'name' => 'required|string|max:255',
+    // 'email' => 'required|email|unique:users,email',
+    // 'password' => 'required|string|min:8|max:255|confirmed',
+
+
+//     public function createUser(MyValidationRequest $request)
+// {
+//     // The request data is already validated at this point
+//     $name = $request->input('name');
+//     $email = $request->input('email');
+//     $password = $request->input('password');
+
+//     // Your logic to create a new user
+// }
+
+public function response(array $errors)
+{
+    return response()->json([
+        'status' => 'error',
+        'message' => 'Validation errors',
+        'errors' => $errors
+    ], 422);
+}
+
+
+
 }
