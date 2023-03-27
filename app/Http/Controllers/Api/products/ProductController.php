@@ -66,7 +66,7 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-
+       try {
         $product=new Product();
         $product->name=$request->name;
         $product->rate=$request->rate;
@@ -105,6 +105,10 @@ class ProductController extends Controller
                 return response()->json([$product,'success' => true]);
 
             }
+       } catch (\Throwable $th) {
+        return response()->json(['some thing is wrong']);
+       }
+       
     
     }
 

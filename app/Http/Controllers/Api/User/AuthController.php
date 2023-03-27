@@ -41,7 +41,23 @@ class AuthController extends Controller
         $id=Auth::user()->id;
         // return $id;
        $user = User::find($id);
+
+       if ($user->name !== $request->name && !$request->hasFile('image')) {
+        // Attempt to rename the user's folder to the new name
+        $old_folder_path = public_path("users/$user->name");
+        $new_folder_path = public_path("users/$request->name");
+        if (is_dir($old_folder_path)) { // Check if the old folder exists
+            if (rename($old_folder_path, $new_folder_path)) { // Attempt to rename the folder
+                $user->name = $request->name;
+            } else {
+                return response()->json(['error' => 'Failed to rename folder.'], 500);
+            }
+        } else {
+            return response()->json(['error' => 'Folder does not exist.'], 404);
+        }
+      }
        
+      if ($request->hasFile('image')) {
         $file = $request->file('image');
         $url="http://127.0.0.1:8000/users/$request->name/";
         //   $extension =  $file->getClientOriginalExtension();
@@ -52,13 +68,17 @@ class AuthController extends Controller
         $img_path=$url.$imageName;
        
         $user->name=$request->name;
-        $user->email=$request->email;
          $user->image=$img_path;
          $user->imgName=$imageName;
-        $user->gender=$request->gender;
-        $user->save();
-        
-        return $user;
+   
+
+      }
+
+      $user->email=$request->email;
+      $user->gender=$request->gender;
+      $user->save();
+      
+      return $user;
     }
 
     public function login(Request $request){
@@ -82,21 +102,7 @@ class AuthController extends Controller
     }
 
 
-    public function delete($id){
-
-        try {
-       $user=User::findOrFail($id);
-        $imageName =  $user->imgName;
-        unlink(public_path("users/$user->name/$user->imgName"));
-        rmdir(public_path("users/$user->name"));
-        $user->delete();
-
-        return $user;
-        } catch (\Throwable $th) {
-           return 'some thing error';
-        }
-       
-    }
+  
 
       public function show(){
        

@@ -17,10 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description');
-            $table->string('image')->nullable();
-            $table->string('rate')->nullable();
-            $table->string('price');
-            $table->string('quantity');
+            $table->integer('rate')->nullable();
+            $table->decimal('price', 10, 2);
+            $table->integer('quantity');
             $table->string('status');
             $table->string('discount');
             $table->timestamps();

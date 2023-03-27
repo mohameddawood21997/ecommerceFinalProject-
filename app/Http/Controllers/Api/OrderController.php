@@ -15,7 +15,6 @@ class OrderController extends Controller
         // return $request;
         $order = new Order();
 
-    //   return optional(Auth::user())->id;
         $order->name = Auth::user()->name ;
         $order->total_price = $request->total_price;
         $order->user_id =Auth::user()->id ;
@@ -29,7 +28,8 @@ class OrderController extends Controller
         //     ['product_id' => 1, 'price' => 100, 'quantity' => 2],
         //     ['product_id' => 2, 'price' => 110, 'quantity' => 1],
         // ];
-
+      
+        $totalPrice=0;
          
         foreach ($request->orderProducts as $product) {
             $orderProduct = new OrderProduct();
@@ -43,6 +43,11 @@ class OrderController extends Controller
              $quan= $products->quantity;
              $products->quantity=$quan-$product['quantity'];
              $products->save();
+
+            
+              
+
+
         }
         // dd($products);
 
@@ -70,6 +75,26 @@ class OrderController extends Controller
 
 
      }
+     public function getOrderDetails(){
+
+        // $orderDetail=Order::where('user_id',1)->with(['OrderProducts'=>function($q){
+        //    return $q->select('order_id')->with(['products',function($q2){
+        //     return $q2->select('product_id','id');
+        //    }]);
+        // }])->get()->toArray();
+
+        $orders = Order::with('orderProducts.product')->get()->toArray();
+        return $orders;
+        // $user_id=auth()->id();
+        // // return $user_id;
+        // $orderDetail=OrderProduct::where('order_id',1)->get();
+
+        // $orderDetail=Order::with(['orderProducts'=>function($q){
+        //     return $q->select('order_id','product_id','quantity','price');
+        // }])->where('user_id',1)->get();
+        // return response()->json($orderDetail);
+     }
+    
 
 }
 

@@ -53,23 +53,34 @@ Route::group(['prefix'=>'users'], function(){
 
        ///////////////////////////////////////////
     //  Route::put('update/{id}',[AuthController::class,'update']);   //
-       Route::delete('delete/{id}',[AuthController::class,'delete']);
+      
        Route::post('login',[AuthController::class,'login']);         //
        Route::post('addToCart',[UserCardController::class,'addToCart'])->middleware('auth:api');   //
        Route::get('showUserCard',[UserCardController::class,'showUserCard'])->middleware('auth:api');  //
-       Route::post('deleteFromCart/{productId}',[UserCardController::class,'deleteFromCart']);        //
+       Route::delete('deleteFromCart/{productId}',[UserCardController::class,'deleteFromCart']);        //
        Route::post('addToFavorite',[FavoriteController::class,'addToFavorite'])->middleware('auth:api');  //
        Route::get('showFavorite',[FavoriteController::class,'showFavorite'])->middleware('auth:api');    //
-       Route::post('deleteFromFavorite/{productId}',[FavoriteController::class,'deleteFromFavorite'])->middleware('auth:api');
+       Route::delete('deleteFromFavorite/{productId}',[FavoriteController::class,'deleteFromFavorite'])->middleware('auth:api');
        Route::post('update',[AuthController::class,'updateUser'])->middleware('auth:api'); 
+       Route::post('transformToCart',[UserCardController::class,'transformToCart'])->middleware('auth:api');
+       Route::post('increaseQuantity',[UserCardController::class,'increaseQuantity'])->middleware('auth:api');
+       Route::post('decreaseQuantity',[UserCardController::class,'decreaseQuantity'])->middleware('auth:api');
+
+
+
 
        //stripement
+
+       
 
        Route::post('stripe',[StripePaymentController::class,'stripePost']);
 
  ///// /////////////////////////order///////////////////
       Route::post('createorder',[OrderController::class,'store'])->middleware('auth:api');
       Route::post('userAddress',[OrderController::class,'addAddress']);
+      Route::get('getOrderDetails',[OrderController::class,'getOrderDetails']);
+
+
 
 
 });
@@ -79,16 +90,19 @@ Route::group(['prefix'=>'users'], function(){
 /////////////////////////////admin////////////////
 Route::post('adminLogin',[AdminAuthController::class,'adminLogin']);
 Route::post('adminLogout',[AdminAuthController::class,'adminLogout'])->middleware('auth:admin-api');
-
+Route::get('users', [AdminAuthController::class,'users']);
 Route::get('showUser/{id}', [AdminAuthController::class,'showUser']);
+Route::post('updateUser/{id}',[AdminAuthController::class,'updateUser'])->middleware('auth:admin-api');
+Route::delete('delete/{id}',[AdminAuthController::class,'delete'])->middleware('auth:admin-api');
+
 
 
 ///////////////////products/////////////////////////
 // Route::apiResource('products',ProductController::class)->middleware('auth:admin-api');
 Route::apiResource('products',ProductController::class);
 
-Route::get('searchByProductName',[ProductController::class,'searchByProductName']);
-Route::get('searchByCatagoryName',[ProductController::class,'searchByCatagoryName']);
+Route::post('searchByProductName',[ProductController::class,'searchByProductName']);
+Route::post('searchByCatagoryName',[ProductController::class,'searchByCatagoryName']);
 Route::post('product/update/{id}',[UpdateProductController::class,'updateProduct'])->middleware('auth:admin-api');//updateProduct
 
 
@@ -101,5 +115,6 @@ Route::post('product/update/{id}',[UpdateProductController::class,'updateProduct
 
 ////////////////////////////////////////////////////////
 Route::apiResource('categories',CategoryController::class);
+Route::apiResource('messages',\App\Http\Controllers\Api\MessageController::class);
 
 

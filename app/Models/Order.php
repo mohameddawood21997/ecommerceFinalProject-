@@ -12,6 +12,10 @@ class Order extends Model
 
     // protected $fillable = ['customer_name'];
     protected $guard = [];
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
     // public $timestamps = false;
 
     public function orderProducts()

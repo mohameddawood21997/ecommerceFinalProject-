@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Requests\user;
+namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation;
 use Illuminate\Validation\Rule;
 
 class UpdateRequest extends FormRequest
@@ -21,20 +20,18 @@ class UpdateRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function rules()
-    {
-        $userId = auth()->user()->id;
+    { 
+         $userId = auth()->user()->id;
         return [
-            'name' => ['required','unique:users,name,' . $userId,
-            // Rule::unique('users:name')->ignore($userId)
-        ],
-            'email' => ['required','email',$this->id,
-            Rule::unique('users')->ignore($userId)
+            'name' => ['required'],
+            'email' => ['required',
+            // ,'email','unique:users,email',$this->id,
+            Rule::unique('users')->ignore($userId),
         ],
             'gender' => ['required'],
-            // 'image' => ['required'],
         ];
     }
 }

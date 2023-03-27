@@ -16,15 +16,14 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->string('name');
             $table->string('total_price');
-            $table->string('shaping_address')->nullable();
             $table->date('deliveryDate')->nullable();
             $table->string('city');
             $table->string('governate');
             $table->string('street');
             $table->string('pinCode');
             $table->string('mobile');
-            $table->string('payment_id')->nullable();
             $table->string('payment_status')->nullable();
 
             $table->timestamps();
