@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->string('name');
+        Schema::table('user_cards', function (Blueprint $table) {
+            $table->integer('quantity')->default(1);
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('name');
+        Schema::table('user_cards', function (Blueprint $table) {
+            $table->dropColumn('quantity');
         });
     }
 };

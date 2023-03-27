@@ -3,11 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\category;
+use App\Models\Message;
 use Illuminate\Http\Request;
+use App\Http\Requests\user\MessageRequest;
+use Illuminate\Support\Facades\Auth;
 
-class CategoryController extends Controller
+class MessageController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:admin-api')->except(['store']);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,14 +22,13 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        try {
-            $categories=category::all();
-       return response()->json($categories);
-        } catch (\Throwable $th) {
+        try{
+            $messages=Message::all();
+        return response()->json($messages);
+        }
+        catch (\Throwable $th) {
             return response()->json('somthing is wrong');
         }
-      
-
     }
 
     /**
@@ -41,15 +47,19 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(MessageRequest $request)
     {
-        $request->validate([
-            'name' => 'required|unique:categories,name|max:30|min:4', 
-        ]);
-        $category=new category();
-        $category->name=$request->name;
-        $category->save();
-        return $category;
+
+        $user_id=Auth::user()->id;
+        $message=new Message();
+        $message->userName=$request->userName;
+        $message->useremail=$request->userEmail;
+        $message->userMessage=$request->userMessage;
+        $message->user_id=$user_id;
+
+        $message->save();
+        return $message;
+
     }
 
     /**
@@ -60,12 +70,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        try {
-            $category=category::findOrFail($id);
-       return response()->json($category);
-        } catch (\Throwable $th) {
-            return response()->json('somthing is wrong');
-        }
+        //
     }
 
     /**
@@ -88,13 +93,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-           'name' => 'required|max:30|min:4|unique:categories,name,'.$id,
-        ]);
-        $category= category::find($id);
-        $category->name=$request->name;
-        $category->save();
-        return response()->json($category);
+        //
     }
 
     /**
@@ -105,13 +104,6 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            $category=category::findOrFail($id);
-            $category->delete();
-            return response()->json($category);
-        } catch (\Throwable $th) {
-            return response()->json('error in delete');
-        }
-       
+        //
     }
 }

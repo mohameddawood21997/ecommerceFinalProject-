@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'smtp'),
+    'default' => env('MAIL_DRIVER', 'smtp'),
 
     /*
     |--------------------------------------------------------------------------
@@ -36,6 +36,7 @@ return [
     'mailers' => [
         'smtp' => [
             'transport' => 'smtp',
+            'driver' => env('MAIL_DRIVER', 'smtp'),
             'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
             'port' => env('MAIL_PORT', 587),
             'encryption' => env('MAIL_ENCRYPTION', 'tls'),
@@ -44,6 +45,7 @@ return [
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
         ],
+      
 
         'ses' => [
             'transport' => 'ses',
@@ -77,6 +79,14 @@ return [
                 'smtp',
                 'log',
             ],
+        ],
+    ],
+
+    'stream' => [
+        'ssl' => [
+            'allow_self_signed' => true,
+            'verify_peer' => 'smtp',
+            'verify_peer_name' => false,
         ],
     ],
 

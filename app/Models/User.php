@@ -42,10 +42,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function getImageUrlAttribute()
-    {
-        return asset('storage/' . $this->attributes['image']);
-    }
+    // public function getImageUrlAttribute()
+    // {
+    //     return asset('storage/' . $this->attributes['image']);
+    // }
 
-    public $timestamps = false;
+    // public $timestamps = false;
+    public function messages()
+    {
+     return $this->hasMany(Message::class,'user_id');
+    }
 }

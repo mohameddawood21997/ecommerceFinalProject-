@@ -1,23 +1,20 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+
 use App\Http\Controllers\Controller;
-use Exception;
 use Illuminate\Http\Request;
-
-
-use Session\Session;
 use Stripe;
-use Stripe\Charge;
-use Stripe\Stripe as StripeStripe;
-
+use Exception;
 
 class StripePaymentController extends Controller
 {
- 
+
 
     public function stripePost(Request $request)
     {
+
+
         try {
 
             $stripe = new \Stripe\StripeClient(
@@ -39,9 +36,17 @@ class StripePaymentController extends Controller
                 'source' => $res->id,
                 'description' => $request->description,
             ]);
+            $order=\App\Models\Order::where('user_id',1)->latest()->first();
+            $order->payment_status='paid';
+            $order->save();
+            // $order->update(['statue'=>'paid']);
+            //  $lastOrder = DB::table('orders')->orderBy('created_at', 'desc')->limit(1);
             return response()->json([$response->status], 201);
         } catch (Exception $ex) {
             return response()->json([['response' => 'Error']], 500);
         }
     }
+
+
+
 }
